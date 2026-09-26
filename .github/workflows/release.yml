@@ -19,16 +19,16 @@ jobs:
 
       - name: Create ZIP
         run: |
-          mkdir 2-1-MUX
-          cp -r . 2-1-MUX
-          rm -rf 2-1-MUX/.git
-          rm -rf 2-1-MUX/.github
-          zip -r 2-1-MUX.zip 2-1-MUX
+          mkdir 2-4-Decoder
+          cp -r . 2-4-Decoder
+          rm -rf 2-4-Decoder/.git
+          rm -rf 2-4-Decoder/.github
+          zip -r 2-4-Decoder.zip 2-4-Decoder
 
       - name: Upload ZIP to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
-          2-1-MUX.zip \
+          2-4-Decoder.zip \
           --clobber

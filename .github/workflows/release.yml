@@ -20,10 +20,9 @@ jobs:
       - name: Create ZIP
         run: |
           mkdir 2-4-Decoder
-          cp -r . 2-4-Decoder
-          rm -rf 2-4-Decoder/.git
-          rm -rf 2-4-Decoder/.github
-          zip -r 2-4-Decoder.zip 2-4-Decoder
+          rsync -av --exclude='.git' --exclude='.github' ./ package/2-4-Decoder/
+          cd package
+          zip -r ../2-4-Decoder.zip 2-4-Decoder
 
       - name: Upload ZIP to release
         env:

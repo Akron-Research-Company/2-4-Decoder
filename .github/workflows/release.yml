@@ -19,8 +19,8 @@ jobs:
 
       - name: Create ZIP
         run: |
-          mkdir 2-4-Decoder
-          rsync -av --exclude='.git' --exclude='.github' ./2-4-Decoder/
+          mkdir -p /package/2-4-Decoder
+          rsync -av --exclude='.git' --exclude='.github' ./ package/2-4-Decoder/
           cd package
           zip -r ../2-4-Decoder.zip 2-4-Decoder
 

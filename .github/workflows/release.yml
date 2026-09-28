@@ -16,16 +16,40 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Create ZIP
+      - name: Create archives
         run: |
+          # ZIP
           zip -r 2-4-Decoder.zip . \
             -x ".git/*" \
-            -x ".github/*"
+            -x ".github/*" \
+            -x "2-4-Decoder.zip" \
+            -x "2-4-Decoder.tar" \
+            -x "2-4-Decoder.tar.gz"
 
-      - name: Check ZIP
+          # TAR
+          tar \
+            --exclude=".git" \
+            --exclude=".github" \
+            --exclude="2-4-Decoder.zip" \
+            --exclude="2-4-Decoder.tar" \
+            --exclude="2-4-Decoder.tar.gz" \
+            -cf 2-4-Decoder.tar .
+
+          # TAR.GZ
+          tar \
+            --exclude=".git" \
+            --exclude=".github" \
+            --exclude="2-4-Decoder.zip" \
+            --exclude="2-4-Decoder.tar" \
+            --exclude="2-4-Decoder.tar.gz" \
+            -czf 2-4-Decoder.tar.gz .
+
+      - name: Check archives
         run: |
-          ls -lh 2-4-Decoder.zip
-          unzip -l 2-4-Decoder.zip
+          ls -lh \
+            2-4-Decoder.zip \
+            2-4-Decoder.tar \
+            2-4-Decoder.tar.gz
 
       - name: Create or update GitHub Release
         env:
@@ -35,10 +59,12 @@ jobs:
 
           if gh release view "$TAG" > /dev/null 2>&1; then
             echo "Release $TAG already exists."
-            echo "Replacing existing ZIP..."
+            echo "Replacing existing archives..."
 
             gh release upload "$TAG" \
               "./2-4-Decoder.zip" \
+              "./2-4-Decoder.tar" \
+              "./2-4-Decoder.tar.gz" \
               --clobber
           else
             echo "Release $TAG does not exist."
@@ -46,5 +72,7 @@ jobs:
 
             gh release create "$TAG" \
               "./2-4-Decoder.zip" \
+              "./2-4-Decoder.tar" \
+              "./2-4-Decoder.tar.gz" \
               --generate-notes
           fi

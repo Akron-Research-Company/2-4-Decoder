@@ -15,28 +15,36 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: Create ZIP
         run: |
           zip -r 2-4-Decoder.zip . \
             -x ".git/*" \
-            -x ".github/*" \
-            -x "2-4-Decoder.zip"
+            -x ".github/*"
 
-      - name: Create or upload GitHub Release
+      - name: Check ZIP
+        run: |
+          ls -lh 2-4-Decoder.zip
+          unzip -l 2-4-Decoder.zip
+
+      - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh release view "${{ github.ref_name }}" > /dev/null 2>&1; then
-            echo "Release already exists. Uploading ZIP..."
-            gh release upload "${{ github.ref_name }}" \ 
-              2-4-Decoder.zip \
+          TAG="${{ github.ref_name }}"
+
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG already exists."
+            echo "Replacing existing ZIP..."
+
+            gh release upload "$TAG" \
+              "./2-4-Decoder.zip" \
               --clobber
           else
-            echo "Release does not exist. Creating it..."
-            gh release create "${{ github.ref_name }}" \
-              2-4-Decoder.zip \
+            echo "Release $TAG does not exist."
+            echo "Creating release..."
+
+            gh release create "$TAG" \
+              "./2-4-Decoder.zip" \
               --generate-notes
           fi

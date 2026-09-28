@@ -1,8 +1,9 @@
 name: Package Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -19,15 +20,15 @@ jobs:
 
       - name: Create ZIP
         run: |
-          mkdir -p /package/2-4-Decoder
-          rsync -av --exclude='.git' --exclude='.github' ./ package/2-4-Decoder/
-          cd package
-          zip -r ../2-4-Decoder.zip 2-4-Decoder
+          zip -r 2-4-Decoder.zip . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "2-4-Decoder.zip"
 
-      - name: Upload ZIP to release
+      - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${{ github.event.release.tag_name }}" \
+          gh release upload "${{ github.ref_name }}" \
           2-4-Decoder.zip \
-          --clobber
+          --generate-notes

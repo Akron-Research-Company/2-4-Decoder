@@ -17,39 +17,24 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Create archives
-        run: |
-          # ZIP
-          zip -r 2-4-Decoder.zip . \
+        run: | 
+          mkdir -p /tmp/2-4-Decoder
+
+          zip -r /tmp/2-4-Decoder/2-4-Decoder.zip . \
             -x ".git/*" \
-            -x ".github/*" \
-            -x "2-4-Decoder.zip" \
-            -x "2-4-Decoder.tar" \
-            -x "2-4-Decoder.tar.gz"
+            -x ".github/*"
 
-          # TAR
           tar \
             --exclude=".git" \
             --exclude=".github" \
-            --exclude="2-4-Decoder.zip" \
-            --exclude="2-4-Decoder.tar" \
-            --exclude="2-4-Decoder.tar.gz" \
-            -cf 2-4-Decoder.tar .
+            -cf /tmp/2-4-Decoder/2-4-Decoder.tar .
 
-          # TAR.GZ
           tar \
             --exclude=".git" \
             --exclude=".github" \
-            --exclude="2-4-Decoder.zip" \
-            --exclude="2-4-Decoder.tar" \
-            --exclude="2-4-Decoder.tar.gz" \
-            -czf 2-4-Decoder.tar.gz .
+            -czf /tmp/2-4-Decoder/2-4-Decoder.tar.gz .
 
-      - name: Check archives
-        run: |
-          ls -lh \
-            2-4-Decoder.zip \
-            2-4-Decoder.tar \
-            2-4-Decoder.tar.gz
+          cp /tmp/2-4-Decoder/* .  
 
       - name: Create or update GitHub Release
         env:
